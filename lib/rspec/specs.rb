@@ -11,11 +11,11 @@ module RSpec
             let(:group) { build :group, permissions: [permission.to_s].compact_blank }
             let(:user) { build :user, groups: [group] }
 
-            abilities[:can]&.each do |action|
+            Array.wrap(abilities[:can]).each do |action|
               it { is_expected.to be_able_to action, described_class }
             end
 
-            abilities[:cannot]&.each do |action|
+            Array.wrap(abilities[:cannot]).each do |action|
               it { is_expected.not_to be_able_to action, described_class }
             end
           end
