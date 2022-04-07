@@ -23,7 +23,7 @@ module RSpec
       end
     end
 
-    def specify_factory(factory_name: nil, traits: nil, context_name: nil)  # :nodoc:
+    def specify_factory(factory_name: nil, traits: nil, context_name: nil) # :nodoc:
       factory_name = described_class.name.underscore.gsub('/', '_').to_sym unless factory_name
 
       describe context_name || 'factory' do
@@ -31,7 +31,7 @@ module RSpec
 
         it { is_expected.to be_valid }
 
-        traits&.each do |trait|
+        Array.wrap(traits).each do |trait|
           context "with #{trait} trait" do
             subject { build_stubbed factory_name, trait }
 
@@ -43,11 +43,11 @@ module RSpec
 
     def specify_associations(belongs_to: nil, has_many: nil, context_name: nil) # :nodoc:
       describe context_name || 'associations' do
-        belongs_to&.each do |association|
+        Array.wrap(belongs_to).each do |association|
           it { is_expected.to belong_to association }
         end
 
-        has_many&.each do |association, dependent|
+        Array.wrap(has_many).each do |association, dependent|
           it { is_expected.to have_many(association).dependent(dependent) }
         end
       end
