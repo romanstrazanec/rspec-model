@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rspec-model (0.1.2)
+    rspec-model (0.2.0)
 
 GEM
   remote: https://rubygems.org/

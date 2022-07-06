@@ -21,6 +21,8 @@ module RSpec
           end
         end
       end
+
+      yield if block_given?
     end
 
     def specify_factory(factory_name: nil, traits: nil, context_name: nil) # :nodoc:
@@ -38,6 +40,8 @@ module RSpec
             it { is_expected.to be_valid }
           end
         end
+
+        yield if block_given?
       end
     end
 
@@ -50,7 +54,38 @@ module RSpec
         Array.wrap(has_many).each do |association, dependent|
           it { is_expected.to have_many(association).dependent(dependent) }
         end
+
+        yield if block_given?
       end
     end
+
+    def specify_validations(presence_of: nil, length_of: nil, inclusion_of: nil, acceptance_of: nil, context_name: nil) # :nodoc:
+      describe context_name || 'validations' do
+        Array.wrap(presence_of).each do |field|
+          it { is_expected.to validate_presence_of field }
+        end
+
+        length_of&.each do |field, options|
+          predicate = validate_length_of field
+          predicate = predicate.is_at_most(options[:at_most]) if options[:at_most]
+
+          it { is_expected.to predicate }
+        end
+
+        inclusion_of&.each do |field, array|
+          it { is_expected.to validate_inclusion_of(field).in_array array }
+        end
+
+        Array.wrap(acceptance_of).each do |field|
+          it { is_expected.to validate_acceptance_of field }
+        end
+
+        yield if block_given?
+      end
+    end
+
+    alias test_factory_validness specify_factory
+    alias test_associations specify_associations
+    alias test_validations specify_validations
   end
 end
