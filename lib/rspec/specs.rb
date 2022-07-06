@@ -66,10 +66,12 @@ module RSpec
         end
 
         length_of&.each do |field, options|
-          predicate = validate_length_of field
-          predicate = predicate.is_at_most(options[:at_most]) if options[:at_most]
+          it do
+            predicate = validate_length_of field
+            predicate = predicate.is_at_most(options[:at_most]) if options[:at_most]
 
-          it { is_expected.to predicate }
+            is_expected.to predicate
+          end
         end
 
         inclusion_of&.each do |field, array|
